@@ -3,10 +3,10 @@ package main
 import (
     "database/sql"
     "encoding/json"
-    "fmt"
+    // "fmt"
     "log"
     "net/http"
-    "strconv"
+    // "strconv"
     "time"
 
     _ "github.com/go-sql-driver/mysql"
@@ -25,7 +25,7 @@ var db *sql.DB
 
 func initDB()  {
     var err error
-    if db, err = sql.Open("mysql", "username:password@tcp(127.0.0.1:3306)/note_app"); err != nil {
+    if db, err = sql.Open("mysql", "root:password@tcp(127.0.0.1:3306)/note_app"); err != nil {
         log.Fatal(err)
     } 
     if err = db.Ping(); err != nil {
@@ -47,7 +47,7 @@ func createNoteHandler(w http.ResponseWriter, r *http.Request)  {
         return
     }
 
-    id, _ := result.LastInserId()
+    id, _ := result.LastInsertId()
     note.ID = int(id)
     note.CreatedAt = time.Now()
     note.ModifiedAt = time.Now()
@@ -68,10 +68,14 @@ func getNotesHandler(w http.ResponseWriter, r *http.Request)  {
     notes := []Note{}
     for rows.Next() {
         var note Note
-        if err := rows.Scan(&note.ID, &note.Title, &note.Content, &note.CreatedAt, &note.ModifiedAt); err != nil {
+        var CreatedAt, ModifiedAt string
+        if err := rows.Scan(&note.ID, &note.Title, &note.Content, &CreatedAt, &ModifiedAt); err != nil {
             http.Error(w, "Failed to scan note", http.StatusInternalServerError)
             return
         }
+        layout := "2006-01-02 15:04:05"
+        note.CreatedAt, _ = time.Parse(layout, CreatedAt)
+        note.ModifiedAt, _ = time.Parse(layout, ModifiedAt)
         notes = append(notes, note)
     }
 
@@ -88,7 +92,7 @@ func main() {
     r.HandleFunc("/notes", getNotesHandler).Methods("GET")
 
     log.Println("Server started at :8080")
-    if err := http.ListenAndServe(":8080", nil); err != nil {
+    if err := http.ListenAndServe(":8080", r); err != nil {
         log.Fatal(err)
     }
 }
