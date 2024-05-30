@@ -6,11 +6,13 @@ import (
     // "fmt"
     "log"
     "net/http"
+    "path/filepath"
     // "strconv"
     "time"
 
     _ "github.com/go-sql-driver/mysql"
     "github.com/gorilla/mux"
+    "github.com/rs/cors"
 )
 
 type Note struct {
@@ -91,8 +93,14 @@ func main() {
     r.HandleFunc("/notes", createNoteHandler).Methods("POST")
     r.HandleFunc("/notes", getNotesHandler).Methods("GET")
 
+    // Serve static files
+    buildPath := filepath.Join("..", "frontend", "note-app-frontend", "build")
+    r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir(buildPath))))
+
+    handler := cors.Default().Handler(r)
+
     log.Println("Server started at :8080")
-    if err := http.ListenAndServe(":8080", r); err != nil {
+    if err := http.ListenAndServe(":8080", handler); err != nil {
         log.Fatal(err)
     }
 }
