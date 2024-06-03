@@ -1,11 +1,9 @@
 package main
 
 import (
-    // "fmt"
     "log"
     "net/http"
     "path/filepath"
-    // "strconv"
 
     "github.com/gorilla/mux"
     "github.com/rs/cors"

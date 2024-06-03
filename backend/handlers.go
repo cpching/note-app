@@ -4,7 +4,12 @@ import (
     "net/http"
     "encoding/json"
     "time"
+    "strconv"
+    "log"
+    "github.com/gorilla/mux"
 )
+
+var timeLayout = "2006-01-02 15:04:05"
 
 func createNoteHandler(w http.ResponseWriter, r *http.Request)  {
     var note Note
@@ -46,9 +51,8 @@ func getNotesHandler(w http.ResponseWriter, r *http.Request)  {
             http.Error(w, "Failed to scan note", http.StatusInternalServerError)
             return
         }
-        layout := "2006-01-02 15:04:05"
-        note.CreatedAt, _ = time.Parse(layout, CreatedAt)
-        note.ModifiedAt, _ = time.Parse(layout, ModifiedAt)
+        note.CreatedAt, _ = time.Parse(timeLayout, CreatedAt)
+        note.ModifiedAt, _ = time.Parse(timeLayout, ModifiedAt)
         notes = append(notes, note)
     }
 
@@ -56,4 +60,35 @@ func getNotesHandler(w http.ResponseWriter, r *http.Request)  {
     json.NewEncoder(w).Encode(notes)
 }
 
+func updateNoteHandler(w http.ResponseWriter, r *http.Request) {
+    // Extract the note ID from the request URL
+    params := mux.Vars(r)
+    log.Print(params)
+    id, err := strconv.Atoi(params["id"])
+    if err != nil {
+        http.Error(w, "Invalid note ID", http.StatusBadRequest)
+        return
+    }
+
+    // Decode the JSON request body into a Note struct
+    var note Note
+    if err := json.NewDecoder(r.Body).Decode(&note); err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    log.Println(note)
+    modified_at := time.Now()
+    // Update the note in the database
+    query := "UPDATE notes SET title = ?, content = ?, modified_at = ? WHERE id = ?"
+    _, err = db.Exec(query, note.Title, note.Content, modified_at, id)
+    if err != nil {
+        http.Error(w, "Failed to update note", http.StatusInternalServerError)
+        return
+    }
+
+
+    // w.Header().Set("Content-Type", "application/json")
+    // json.NewEncoder(w).Encode(note)
+}
 
