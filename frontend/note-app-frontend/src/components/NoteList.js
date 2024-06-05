@@ -1,55 +1,61 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import NoteForm from './NoteForm';
+import Note from './Note';
+import FloatingButton from './FloatingButton';
+import FloatingEditPage from './FloatingEditPage';
 
 const NoteList = () => {
-  const [notes, setNotes] = useState([]);
-  const [editingNote, setEditingNote] = useState(null);
+    const [notes, setNotes] = useState([]);
+    const [editingNote, setEditingNote] = useState(null);
+    const [isEditing, setIsEditing] = useState(false)
 
-  useEffect(() => {
-    fetchNotes();
-  }, []);
+    useEffect(() => {
+        fetchNotes();
+    }, []);
 
-  const fetchNotes = async () => {
-    const response = await axios.get('http://localhost:8080/notes');
-    setNotes(response.data);
-  };
+    const openEditPage = () => {
+        setEditingNote(null)
+        setIsEditing(true)
+    };
 
-  const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:8080/notes/${id}`);
-    fetchNotes();
-  };
+    const closeEditPage = () => {
+        setIsEditing(false);
+    };
 
-  const handleEdit = (note) => {
-    setEditingNote(note);
-  };
+    const fetchNotes = async () => {
+        const response = await axios.get('http://localhost:8080/notes');
+        setNotes(response.data);
+    };
 
-  const handleSave = () => {
-    setEditingNote(null);
-    fetchNotes();
-  };
+    const handleDelete = async (id) => {
+        await axios.delete(`http://localhost:8080/notes/${id}`);
+        fetchNotes();
+    };
 
-  return (
-    <div>
-      <h1>Notes</h1>
-      {editingNote ? (
-        <NoteForm note={editingNote} onSave={handleSave} />
-      ) : (
-        <NoteForm onSave={handleSave} />
-      )}
-      <ul>
-        {notes.map((note) => (
-          <li key={note.id}>
-            <h2>{note.title}</h2>
-            <p>{note.content}</p>
-            <button onClick={() => handleEdit(note)}>Edit</button>
-            <button onClick={() => handleDelete(note.id)}>Delete</button>
-          </li>
+    const handleEdit = (note) => {
+        setEditingNote(note);
+    };
+
+    const handleSave = () => {
+        setEditingNote(null);
+        fetchNotes();
+    };
+
+    return (
+        <div>
+        {notes.map(note => (
+            <Note noteId = {note.id} noteTitle = {note.title} noteContent = {note.content} />
         ))}
-      </ul>
-    </div>
-  );
+        <FloatingButton onClick={openEditPage} />
+        <FloatingEditPage 
+        isVisible={isEditing} 
+        onClose={closeEditPage}
+        />
+        </div>
+
+    );
 };
+
 
 export default NoteList;
 
