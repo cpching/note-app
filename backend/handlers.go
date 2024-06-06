@@ -3,13 +3,12 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"log"
+	// "log"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
-	"google.golang.org/genproto/googleapis/cloud/aiplatform/v1beta1/schema/predict/params"
 )
 
 var timeLayout = "2006-01-02 15:04:05"
@@ -73,9 +72,10 @@ func getNoteHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     var note Note
+    var CreatedAt, ModifiedAt string
     query := "SELECT id, title, content, created_at, modified_at FROM notes WHERE id = ?"
     row := db.QueryRow(query, id)
-    if err := row.Scan(&note.ID, &note.Title, &note.Content, &note.CreatedAt, &note.ModifiedAt); err != nil {
+    if err := row.Scan(&note.ID, &note.Title, &note.Content, &CreatedAt, &ModifiedAt); err != nil {
         if err == sql.ErrNoRows {
             http.Error(w, "Note not fount", http.StatusNotFound)
         } else {
@@ -83,6 +83,8 @@ func getNoteHandler(w http.ResponseWriter, r *http.Request) {
         }
         return
     }
+    note.CreatedAt, _ = time.Parse(timeLayout, CreatedAt)
+    note.ModifiedAt, _ = time.Parse(timeLayout, ModifiedAt)
 
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(note)
