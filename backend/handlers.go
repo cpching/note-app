@@ -1,12 +1,15 @@
 package main
 
 import (
-    "net/http"
-    "encoding/json"
-    "time"
-    "strconv"
-    "log"
-    "github.com/gorilla/mux"
+	"database/sql"
+	"encoding/json"
+	"log"
+	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/gorilla/mux"
+	"google.golang.org/genproto/googleapis/cloud/aiplatform/v1beta1/schema/predict/params"
 )
 
 var timeLayout = "2006-01-02 15:04:05"
@@ -60,10 +63,35 @@ func getNotesHandler(w http.ResponseWriter, r *http.Request)  {
     json.NewEncoder(w).Encode(notes)
 }
 
+func getNoteHandler(w http.ResponseWriter, r *http.Request) {
+    // Extract the note ID from the request URL
+    params := mux.Vars(r)
+    id, err := strconv.Atoi(params["id"])
+    if err != nil {
+        http.Error(w, "Invalid note ID", http.StatusBadRequest)
+        return
+    }
+
+    var note Note
+    query := "SELECT id, title, content, created_at, modified_at FROM notes WHERE id = ?"
+    row := db.QueryRow(query, id)
+    if err := row.Scan(&note.ID, &note.Title, &note.Content, &note.CreatedAt, &note.ModifiedAt); err != nil {
+        if err == sql.ErrNoRows {
+            http.Error(w, "Note not fount", http.StatusNotFound)
+        } else {
+            http.Error(w, "Failed to retrieve note", http.StatusInternalServerError)
+        }
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(note)
+}
+
 func updateNoteHandler(w http.ResponseWriter, r *http.Request) {
     // Extract the note ID from the request URL
     params := mux.Vars(r)
-    log.Print(params)
+    // log.Print(params)
     id, err := strconv.Atoi(params["id"])
     if err != nil {
         http.Error(w, "Invalid note ID", http.StatusBadRequest)
@@ -77,7 +105,7 @@ func updateNoteHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    log.Println(note)
+    // log.Println(note)
     modified_at := time.Now()
     // Update the note in the database
     query := "UPDATE notes SET title = ?, content = ?, modified_at = ? WHERE id = ?"
@@ -88,7 +116,26 @@ func updateNoteHandler(w http.ResponseWriter, r *http.Request) {
     }
 
 
-    // w.Header().Set("Content-Type", "application/json")
-    // json.NewEncoder(w).Encode(note)
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(note)
+}
+
+func deleteNoteHandler(w http.ResponseWriter, r *http.Request) {
+    // Extract 
+    params := mux.Vars(r)
+    id, err := strconv.Atoi(params["id"])
+    if err != nil {
+        http.Error(w, "Invalid note ID", http.StatusBadRequest)
+        return
+    }
+
+    query := "DELETE FROM notes WHERE id = ?"
+    _, err = db.Exec(query, id)
+    if err != nil {
+        http.Error(w, "Failed to delete note", http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusNoContent)
 }
 
