@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Note from './Note';
 import FloatingButton from './FloatingButton';
 import FloatingEditPage from './FloatingEditPage';
 
@@ -43,19 +42,16 @@ const NoteList = () => {
 
     return (
         <div>
-        {notes.map(note => (
-            <Note noteId = {note.id} noteTitle = {note.title} noteContent = {note.content} />
-        ))}
-        <FloatingButton onClick={openEditPage} />
-        <FloatingEditPage 
-        isVisible={isEditing} 
-        onClose={closeEditPage}
-        />
+            <h1>hey</h1>
+            <FloatingButton onClick={openEditPage} />
+            <FloatingEditPage 
+            isVisible={isEditing} 
+            onClose={closeEditPage}
+            />
         </div>
 
     );
 };
-
 
 export default NoteList;
 
