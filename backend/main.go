@@ -7,8 +7,21 @@ import (
 
     "github.com/gorilla/mux"
     "os"
-    // "github.com/rs/cors"
+    "github.com/rs/cors"
 )
+
+func enableCors(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+        w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+        w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+        if r.Method == "OPTIONS" {
+            return
+        }
+        next.ServeHTTP(w, r)
+    })
+}
+
 
 func main() {
     initDB()
@@ -31,15 +44,11 @@ func main() {
         }
         http.ServeFile(w, r, indexPath)
     })
-    // r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir(buildPath))))
-    // r.PathPrefix("/").Handler(http.FileServer(http.Dir(buildPath)))
-    // r.Handle("/", buildPath)
 
-    // handler := cors.Default().Handler(r)
+    handler := cors.Default().Handler(r)
 
     log.Println("Server started at :8080")
-    // if err := http.ListenAndServe(":8080", handler); err != nil {
-    if err := http.ListenAndServe(":8080", r); err != nil {
+    if err := http.ListenAndServe(":8080", handler); err != nil {
         log.Fatal(err)
     }
 }
