@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import apiUrl from '../apiConfig'; // Import the apiUrl from the configuration file
 
 const Note = () => {
     const { id } = useParams();
@@ -8,7 +9,7 @@ const Note = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/notes/${id}`)
+        axios.get(`${apiUrl}/notes/${id}`)
             .then(response => {
                 setNote(response.data);
                 setLoading(false)

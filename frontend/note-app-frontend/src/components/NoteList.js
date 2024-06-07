@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import FloatingButton from './FloatingButton';
 import FloatingEditPage from './FloatingEditPage';
+import apiUrl from '../apiConfig'; // Import the apiUrl from the configuration file
 
 const NoteList = () => {
     const [notes, setNotes] = useState([]);
@@ -22,12 +23,12 @@ const NoteList = () => {
     };
 
     const fetchNotes = async () => {
-        const response = await axios.get('http://localhost:8080/notes');
+        const response = await axios.get(`${apiUrl}/notes`);
         setNotes(response.data);
     };
 
     const handleDelete = async (id) => {
-        await axios.delete(`http://localhost:8080/notes/${id}`);
+        await axios.delete(`/api/notes/${id}`);
         fetchNotes();
     };
 
@@ -42,14 +43,13 @@ const NoteList = () => {
 
     return (
         <div>
-            <h1>hey</h1>
+            <h1>All Notes</h1>
             <FloatingButton onClick={openEditPage} />
             <FloatingEditPage 
             isVisible={isEditing} 
             onClose={closeEditPage}
             />
         </div>
-
     );
 };
 

@@ -9,7 +9,7 @@ import Home from './components/Home';
 const router = createBrowserRouter([
   { path: "/", element: <Home/> },
   {
-    path: "/notes",
+    path: "/notes/",
     element: <NoteList />,
   },
   {
