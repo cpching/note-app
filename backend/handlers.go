@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 )
 
-var timeLayout = "2006-01-02 15:04:05"
 
 func createNoteHandler(w http.ResponseWriter, r *http.Request)  {
     var note Note
@@ -90,7 +90,7 @@ func getNoteHandler(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(note)
 }
 
-func updateNoteHandler(w http.ResponseWriter, r *http.Request) {
+/* func updateNoteHandler(w http.ResponseWriter, r *http.Request) {
     // Extract the note ID from the request URL
     params := mux.Vars(r)
     // log.Print(params)
@@ -120,7 +120,7 @@ func updateNoteHandler(w http.ResponseWriter, r *http.Request) {
 
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(note)
-}
+} */
 
 func deleteNoteHandler(w http.ResponseWriter, r *http.Request) {
     // Extract 
@@ -139,5 +139,17 @@ func deleteNoteHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     w.WriteHeader(http.StatusNoContent)
+}
+
+// This function handles WebSocket connections for updating notes
+func handleNoteUpdates(w http.ResponseWriter, r *http.Request) {
+    // 
+    upgrader.CheckOrigin = func(r *http.Request) bool {
+        return true
+    }
+}
+
+func handleMessages()  {
+    
 }
 

@@ -34,6 +34,8 @@ func main() {
 
     handler := cors.Default().Handler(r)
 
+    go handleMessages()
+
     log.Println("Server started at :8080")
     if err := http.ListenAndServe(":8080", handler); err != nil {
         log.Fatal(err)
