@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import FloatingButton from './FloatingButton';
 import FloatingEditPage from './FloatingEditPage';
-import apiUrl from '../apiConfig'; // Import the apiUrl from the configuration file
+import apiUrl from '../Config'; // Import the apiUrl from the configuration file
 
 const NoteList = () => {
     const [notes, setNotes] = useState([]);

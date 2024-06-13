@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+// import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import './App.css';
 import NoteList from './components/NoteList';
@@ -23,6 +23,7 @@ function App() {
     <div>
       <RouterProvider router={router} />
     </div>
+
   );
 }
 
