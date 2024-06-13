@@ -3,13 +3,12 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	// "log"
+
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/gorilla/websocket"
 )
 
 
@@ -90,7 +89,7 @@ func getNoteHandler(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(note)
 }
 
-/* func updateNoteHandler(w http.ResponseWriter, r *http.Request) {
+func updateNoteHandler(w http.ResponseWriter, r *http.Request) {
     // Extract the note ID from the request URL
     params := mux.Vars(r)
     // log.Print(params)
@@ -120,10 +119,9 @@ func getNoteHandler(w http.ResponseWriter, r *http.Request) {
 
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(note)
-} */
+}
 
 func deleteNoteHandler(w http.ResponseWriter, r *http.Request) {
-    // Extract 
     params := mux.Vars(r)
     id, err := strconv.Atoi(params["id"])
     if err != nil {
@@ -139,17 +137,5 @@ func deleteNoteHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     w.WriteHeader(http.StatusNoContent)
-}
-
-// This function handles WebSocket connections for updating notes
-func handleNoteUpdates(w http.ResponseWriter, r *http.Request) {
-    // 
-    upgrader.CheckOrigin = func(r *http.Request) bool {
-        return true
-    }
-}
-
-func handleMessages()  {
-    
 }
 

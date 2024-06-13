@@ -9,10 +9,7 @@ func registerRoutes(r *mux.Router) {
     api.HandleFunc("/notes", createNoteHandler).Methods("POST")
     api.HandleFunc("/notes", getNotesHandler).Methods("GET")
     api.HandleFunc("/notes/{id}", getNoteHandler).Methods("GET")
-    // api.HandleFunc("/notes/{id}", updateNoteHandler).Methods("PUT")
+    api.HandleFunc("/notes/{id}", updateNoteHandler).Methods("PUT")
     api.HandleFunc("/notes/{id}", deleteNoteHandler).Methods("DELETE")
-
-    ws := r.PathPrefix("/ws").Subrouter()
-    ws.HandleFunc("/ws/notes/{id}", handleNoteUpdates)
 }
 
