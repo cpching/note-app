@@ -28,7 +28,7 @@ const NoteList = () => {
     };
 
     const handleDelete = async (id) => {
-        await axios.delete(`/api/notes/${id}`);
+        // await axios.delete(`/api/notes/${id}`);
         fetchNotes();
     };
 
