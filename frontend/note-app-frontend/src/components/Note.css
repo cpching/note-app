@@ -1,0 +1,36 @@
+body {}
+
+.title-area {
+    height: 10vh;
+    font-size: 32px;
+}
+
+#title:focus {
+    box-shadow: none;
+}
+
+.content-area {
+    height: 90vh;
+    /* Full height of viewport */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* Content starts from the top */
+    align-items: stretch;
+    /* Stretch items to full width */
+}
+
+.custom-textarea {
+    background-color: #f0f0f0;
+    color: #333;
+    font-size: 16px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1;
+    /* Take remaining vertical space */
+}
+
+#content:focus {
+    box-shadow: none;
+}
