@@ -1,6 +1,6 @@
 # How to build and execute?
-### Preparation
-## Database
+## Preparation
+### Database
 1. Start a MySQL server instance using docker
     ``` bash
     docker run --name mysql-note-app -e MYSQL_ROOT_PASSWORD=<dbPassword> -p <dbIp>:<dbPort>:3306 -d mysql:latest
@@ -17,15 +17,15 @@
 4. Create a table `notes`
     ``` sql
     CREATE TABLE notes (
-    -> id INT AUTO_INCREAMENT PRIMARY KEY,
-    -> title VARCHAR(255) NOT NULL,
-    -> content TEXT,
-    -> created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -> modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-    -> );
+        id int auto_increament primary key,
+        title varchar(255) not null,
+        content text,
+        created_at timestamp default current_timestamp,
+        modified_at timestamp default current_timestamp on update current_timestamp
+    );
     ```
     
-## Environment Variables
+### Environment Variables
 - Create a `.env` file under `backend` directory
     ```
     PORT=<noteAppPort>
