@@ -1,10 +1,16 @@
-.PHONY: build run clean
+.PHONY: build run clean air
+
+EXECUTABLE := note-app
 
 build:
-	go build -o note-app
+	go build -o $(EXECUTABLE)
 
 run: build
-	./note-app
+	./$(EXECUTABLE)
 
 clean:
-	rm -f note-app
+	go clean
+	rm -f $(EXECUTABLE)
+
+air:
+	air

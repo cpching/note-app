@@ -5,9 +5,12 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"os"
+
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"os"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 func enableCORS(next http.Handler) http.Handler {
@@ -26,7 +29,10 @@ func enableCORS(next http.Handler) http.Handler {
 }
 
 func main() {
+	PORT := os.Getenv("PORT")
+
 	initDB()
+	defer db.Close()
 
 	r := mux.NewRouter()
 	registerRoutes(r)
@@ -57,8 +63,8 @@ func main() {
 	// handler := cors.Default().Handler(r)
 	handler = r
 
-	log.Println("Server started at :8080")
-	if err := http.ListenAndServe(":8080", handler); err != nil {
+	log.Println("Server started at :" + PORT)
+	if err := http.ListenAndServe(":"+PORT, handler); err != nil {
 		log.Fatal(err)
 	}
 }
